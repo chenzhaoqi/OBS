@@ -109,3 +109,4 @@ deps/libyuv/x86
 deps/libyuv/x64
 deps/Agora/
 deps/mac/libs/
+deps/curl

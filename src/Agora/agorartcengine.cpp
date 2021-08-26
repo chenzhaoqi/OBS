@@ -412,8 +412,10 @@ int AgoraRtcEngine::joinChannel(const std::string &key,
 	options.autoSubscribeAudio = muteAudio;
 	options.autoSubscribeVideo = muteVideo;
 
-	if (enableDual)
+	if (enableDual) {
 		m_rtcEngine->enableDualStreamMode(true);
+		apm->setParameters("{\"che.video.lowBitRateStreamParameter\":{\"width\":360,\"height\":640,\"frameRate\":10,\"bitRate\":1000}}");
+	}
 
 	int r =  m_rtcEngine->joinChannel(key.data(), channel.data(), "", uid, options);//
 	return r;

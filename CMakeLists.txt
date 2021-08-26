@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.5)
 project(agora-tool-ui VERSION 1.0.0)
 
+set(QTDIR "D:/workspace/project/iyuta/obs/Qt_5.15.2/5.15.2/msvc2019_64")
+set(LIBOBS_INCLUDE_DIR "D:/workspace/project/iyuta/obs/obs-studio/libobs")
+set(LIBOBS_LIB "D:/workspace/project/iyuta/obs/obs-studio/build/libobs")
+set(LibObs_DIR "D:/workspace/project/iyuta/obs/obs-studio/build/libobs")
+set(OBS_FRONTEND_LIB "D:/workspace/project/iyuta/obs/obs-studio/build/UI/obs-frontend-api")
+
 set(CMAKE_PREFIX_PATH "${QTDIR}")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)

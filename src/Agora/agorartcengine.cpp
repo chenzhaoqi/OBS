@@ -385,6 +385,23 @@ void AgoraRtcEngine::SetRecordBoost()
 	
 }
 
+int AgoraRtcEngine::enableDual(int dualWidth, int dualHeight, int dualFps, int dualBitRate)
+{
+	m_rtcEngine->enableDualStreamMode(true);
+	AParameter apm(m_rtcEngine);
+	std::string param = "{\"che.video.lowBitRateStreamParameter\": {\"width\": ";
+	param += std::to_string(dualWidth);
+	param += ",\"height\":";
+	param += std::to_string(dualHeight);
+	param += ", \"frameRate\":";
+	param += std::to_string(dualFps);
+	param += ", \"bitRate\":";
+	param += std::to_string(dualBitRate);
+	param += " }}";
+	blog(LOG_INFO, param.c_str());
+	apm->setParameters(param.c_str());
+}
+
 int AgoraRtcEngine::joinChannel(const std::string &key,
 				const std::string &channel, unsigned int uid, bool enableDual, bool muteAudio , bool muteVideo)
 {

@@ -64,7 +64,7 @@ AgoraSettings::AgoraSettings(QWidget *parent)
 	ui->labelGetInfoMode->setText(tr("Agora.Settings.GetInfo.Mode"));
 	ui->cmbGetMode->setItemText(0, tr("Agora.Settings.GetInfo.Mode.Manaul"));
 	ui->cmbGetMode->setItemText(1, tr("Agora.Settings.GetInfo.Mode.Http.Get"));
-	ui->cmbGetMode->setCurrentIndex(0);
+	ui->cmbGetMode->setCurrentIndex(1);
 	ui->labelGetInfoMode_2->setText(tr("Agora.Settings.GetInfo.Mode.Information"));
 	ui->generalGroupBox->setTitle(tr("Agora.Settings.General"));
 	ui->loadConfigFileLabel->setText(tr("Basic.Settigs.Agora.LoadConfig"));

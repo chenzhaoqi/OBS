@@ -271,7 +271,7 @@ void AgoraBasic::InitBasicConfig()
 	}
 
 	m_agoraToolSettings.savePersistAppid = config_get_bool(globalAgoraConfig, "AgoraTool", "savePersistAppid");
-	if(m_agoraToolSettings.savePersistAppid	&& m_agoraToolSettings.info_mode == 0)
+	if(m_agoraToolSettings.savePersistAppid)
 		m_agoraToolSettings.appid = config_get_string(globalAgoraConfig, "AgoraTool", "appid");
 }
 
@@ -293,19 +293,11 @@ AgoraBasic::~AgoraBasic()
 	AgoraRtcEngine::GetInstance()->ReleaseInstance();
 
 	if (m_agoraToolSettings.savePersist) {
-		if (m_agoraToolSettings.info_mode == 0) {//manually
-			config_set_string(globalAgoraConfig, "AgoraTool", "appid", m_agoraToolSettings.appid.c_str());
-			config_set_string(globalAgoraConfig, "AgoraTool", "token", m_agoraToolSettings.token.c_str());
-			config_set_string(globalAgoraConfig, "AgoraTool", "channelName", m_agoraToolSettings.channelName.c_str());
-			config_set_uint(globalAgoraConfig, "AgoraTool", "uid", m_agoraToolSettings.uid);
-		}
-		else {
-			config_set_uint(globalAgoraConfig, "AgoraTool", "uid", 0);
-			config_set_string(globalAgoraConfig, "AgoraTool", "appid", "");
-			config_set_string(globalAgoraConfig, "AgoraTool", "token", "");
-			config_set_string(globalAgoraConfig, "AgoraTool", "channelName", "");
-		}
-		
+		config_set_string(globalAgoraConfig, "AgoraTool", "appid", m_agoraToolSettings.appid.c_str());
+		config_set_string(globalAgoraConfig, "AgoraTool", "token", m_agoraToolSettings.token.c_str());
+		config_set_string(globalAgoraConfig, "AgoraTool", "channelName", m_agoraToolSettings.channelName.c_str());
+		config_set_uint(globalAgoraConfig, "AgoraTool", "uid", m_agoraToolSettings.uid);
+
 		config_set_uint(globalAgoraConfig, "AgoraTool", "InformationMode", m_agoraToolSettings.info_mode);
 
 		config_set_string(globalAgoraConfig, "AgoraTool", "rtmp_url", m_agoraToolSettings.rtmp_url.c_str());
@@ -364,7 +356,7 @@ AgoraBasic::~AgoraBasic()
 		config_set_bool(globalAgoraConfig, "AgoraTool", "savePersist", false);
 	}
 	
-	if(m_agoraToolSettings.savePersistAppid && m_agoraToolSettings.info_mode == 0)//manually
+	if(m_agoraToolSettings.savePersistAppid)
 		config_set_string(globalAgoraConfig, "AgoraTool", "appid", m_agoraToolSettings.appid.c_str());
 	else
 		config_set_string(globalAgoraConfig, "AgoraTool", "appid", "");
@@ -559,6 +551,10 @@ void AgoraBasic::joinChannel(std::string token)
 	joinFailedTimer.stop();
 	joinFailedTimer.start(10000);
 	blog(LOG_INFO, "agora token:%s", m_agoraToolSettings.token.c_str());
+	if (m_agoraToolSettings.bDualStream){
+		AgoraRtcEngine::GetInstance()->enableDual(m_agoraToolSettings.dual_width, m_agoraToolSettings.dual_height, 
+			m_agoraToolSettings.dual_fps, m_agoraToolSettings.agora_bitrate);
+	}
 	AgoraRtcEngine::GetInstance()->joinChannel(m_agoraToolSettings.token.c_str()
 		, m_agoraToolSettings.channelName.c_str(), m_agoraToolSettings.uid, m_agoraToolSettings.bDualStream,
 		!m_agoraToolSettings.muteAllRemoteAudioVideo, !m_agoraToolSettings.muteAllRemoteAudioVideo);
@@ -593,6 +589,11 @@ void AgoraBasic::reuquestToken_slot(QString json, int err)
 			ui->agoraSteramButton->setText(start_text);
 			return;
 		}
+		m_agoraToolSettings.dual_width = jsData["dualWidth"].toInt();
+		m_agoraToolSettings.dual_height = jsData["dualHeight"].toInt();
+		m_agoraToolSettings.dual_bitrate = jsData["dualBitRate"].toInt();
+		m_agoraToolSettings.dual_fps = jsData["dualFps"].toInt();
+
 #if _WIN32
     m_agoraToolSettings.appid = jsData["appID"].toString().toUtf8();
     m_agoraToolSettings.channelName = jsData["channelName"].toString().toUtf8();

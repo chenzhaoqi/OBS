@@ -47,6 +47,7 @@ public:
 	void startPreview();
 	void stopPreview();
 	void SetRecordBoost();
+	int enableDual(int dualWidth, int dualHeight, int dualFps, int dualBitRate);
 	int joinChannel(const std::string &key, const std::string &channel,
 			unsigned uid, bool enableDual, bool muteAudio = true, bool muteVideo = true);
 	int leaveChannel();

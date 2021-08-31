@@ -61,12 +61,17 @@ typedef struct tagAgoraToolSettings {
 	bool savePersistAppid = false;
 
 	std::string information_url = "";
-	int info_mode = 0;//0:manually 1:http get
+	int info_mode = 1;//0:manually 1:http get
 	bool SavePCM = false;
 
 	int cpuThreshold = 95;
 
 	bool bDualStream = false;
+	int  dual_fps = 10;
+	int  dual_bitrate = 1000;
+	int  dual_width = 180;
+	int  dual_height = 320;
+
 } AgoraToolSettings, *PAgoraToolSettings;
 
 class DisplayResizeEvent : public QObject

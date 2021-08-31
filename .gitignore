@@ -105,6 +105,7 @@ tags
 */**/.DS_Store
 *.exe
 
+deps/curl
 deps/libyuv/x86
 deps/libyuv/x64
 deps/Agora/

@@ -11,7 +11,7 @@
 #include <util/platform.h>
 #include <util/dstr.h>
 #include <thread>
-#define AGORA_TOOL_VERSION "21.06.23.18.00"
+#define AGORA_TOOL_VERSION "21.09.01.03.346"
 #if _WIN32
 #else
 #include <dispatch/dispatch.h>
@@ -553,7 +553,7 @@ void AgoraBasic::joinChannel(std::string token)
 	blog(LOG_INFO, "agora token:%s", m_agoraToolSettings.token.c_str());
 	if (m_agoraToolSettings.bDualStream){
 		AgoraRtcEngine::GetInstance()->enableDual(m_agoraToolSettings.dual_width, m_agoraToolSettings.dual_height, 
-			m_agoraToolSettings.dual_fps, m_agoraToolSettings.agora_bitrate);
+			m_agoraToolSettings.dual_fps, m_agoraToolSettings.dual_bitrate);
 	}
 	AgoraRtcEngine::GetInstance()->joinChannel(m_agoraToolSettings.token.c_str()
 		, m_agoraToolSettings.channelName.c_str(), m_agoraToolSettings.uid, m_agoraToolSettings.bDualStream,
@@ -576,8 +576,8 @@ void AgoraBasic::reuquestToken_slot(QString json, int err)
 
 		QJsonObject jsonObject = doc.object();
 
-		int code = jsonObject["code"].toInt();
-		if (code != 0) {
+		bool code = jsonObject["success"].toBool();
+		if (code != true) {
 			QMessageBox::information(NULL, QString(""), requertTokenError);
 			ui->agoraSteramButton->setText(start_text);
 			return;
@@ -589,22 +589,34 @@ void AgoraBasic::reuquestToken_slot(QString json, int err)
 			ui->agoraSteramButton->setText(start_text);
 			return;
 		}
-		m_agoraToolSettings.dual_width = jsData["dualWidth"].toInt();
-		m_agoraToolSettings.dual_height = jsData["dualHeight"].toInt();
-		m_agoraToolSettings.dual_bitrate = jsData["dualBitRate"].toInt();
-		m_agoraToolSettings.dual_fps = jsData["dualFps"].toInt();
+
+		if (jsData["appId"] != NULL && !jsData["appId"].isNull()) {
 
 #if _WIN32
-    m_agoraToolSettings.appid = jsData["appID"].toString().toUtf8();
+    m_agoraToolSettings.appid = jsData["appId"].toString().toUtf8();
     m_agoraToolSettings.channelName = jsData["channelName"].toString().toUtf8();
     m_agoraToolSettings.token = jsData["token"].toString().toUtf8();
 #else
-    m_agoraToolSettings.appid = jsData["appID"].toString().toStdString();
+    m_agoraToolSettings.appid = jsData["appId"].toString().toStdString();
     m_agoraToolSettings.channelName = jsData["channelName"].toString().toStdString();
     m_agoraToolSettings.token = jsData["token"].toString().toStdString();
 #endif
+	m_agoraToolSettings.uid = strtoul(jsData["uid"].toString().toUtf8().data(), nullptr, 10);
 
-		m_agoraToolSettings.uid = strtoul(jsData["uid"].toString().toUtf8().data(), nullptr, 10);
+		}
+
+#if _WIN32
+		m_agoraToolSettings.dual_width = atoi(jsData["dualWidth"].toString().toUtf8());
+		m_agoraToolSettings.dual_height = atoi(jsData["dualHeight"].toString().toUtf8());
+		m_agoraToolSettings.dual_bitrate = atoi(jsData["dualBitRate"].toString().toUtf8());
+		m_agoraToolSettings.dual_fps = atoi(jsData["dualFps"].toString().toUtf8());
+#else
+		m_agoraToolSettings.dual_width = atoi(jsData["dualWidth"].toString().toStdString());
+		m_agoraToolSettings.dual_height = atoi(jsData["dualHeight"].toString().toStdString());
+		m_agoraToolSettings.dual_bitrate = atoi(jsData["dualBitRate"].toString().toStdString());
+		m_agoraToolSettings.dual_fps = atoi(jsData["dualFps"].toString().toStdString());
+#endif
+
 		joinChannel(m_agoraToolSettings.token);
 
 		return;
